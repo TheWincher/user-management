@@ -3,10 +3,7 @@ ktor:
     port: 8080
   application:
     modules:
-      - louchez.emmanuel.SerializationKt.configureSerialization
-      - louchez.emmanuel.StatusPagesKt.configureStatusPages
-      - louchez.emmanuel.RoutingKt.configureRouting
-      - louchez.emmanuel.Application.module
+      - louchez.emmanuel.ApplicationKt.module
 
 db:
   url: "jdbc:postgresql://localhost:5432/user_management"

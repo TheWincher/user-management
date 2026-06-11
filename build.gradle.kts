@@ -16,16 +16,13 @@ kotlin {
     jvmToolchain(21)
 }
 dependencies {
-    implementation(ktorLibs.serialization.kotlinx.json)
     implementation(ktorLibs.server.config.yaml)
-    implementation(ktorLibs.server.contentNegotiation)
     implementation(ktorLibs.server.core)
     implementation(ktorLibs.server.netty)
     implementation(ktorLibs.server.statusPages)
     implementation(libs.logback.classic)
 
-    implementation("com.apurebase:kgraphql:0.19.0")
-    implementation("com.apurebase:kgraphql-ktor:0.19.0")
+    implementation("com.expediagroup:graphql-kotlin-ktor-server:8.3.0")
 
     implementation("org.jetbrains.exposed:exposed-core:0.61.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.61.0")
