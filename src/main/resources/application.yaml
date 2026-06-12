@@ -9,3 +9,8 @@ db:
   url: "jdbc:postgresql://localhost:5432/user_management"
   user: "postgres"
   password: "postgres"
+
+jwt:
+  secret: "une-clé-secrète-longue-et-aléatoire"
+  issuer: "user-management"
+  audience: "users"
