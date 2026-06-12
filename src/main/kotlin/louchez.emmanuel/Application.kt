@@ -13,6 +13,7 @@ import louchez.emmanuel.di.JwtConfig
 import louchez.emmanuel.di.appModule
 
 import louchez.emmanuel.infrastruscture.database.initDatabase
+import louchez.emmanuel.interfaces.graphql.AppGraphQLExceptionHandler
 import louchez.emmanuel.interfaces.graphql.AuthContextFactory
 import louchez.emmanuel.interfaces.graphql.AuthMutation
 import louchez.emmanuel.interfaces.graphql.UserMutation
@@ -48,6 +49,10 @@ fun Application.module() {
 
         server {
             contextFactory = AuthContextFactory()
+        }
+
+        engine {
+            exceptionHandler = AppGraphQLExceptionHandler()
         }
     }
 
