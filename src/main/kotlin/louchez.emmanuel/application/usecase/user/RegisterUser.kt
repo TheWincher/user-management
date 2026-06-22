@@ -19,7 +19,7 @@ class RegisterUserUseCase(val userRepository: UserRepository, val passwordHasher
         }
 
         val hashedPassword = passwordHasher.hash(password)
-        val user =  userRepository.save(User.create(email, username, hashedPassword).getOrElse { return Result.failure(it) })
+        val user = userRepository.save(User.create(email, username, hashedPassword))
 
         return Result.success(user)
     }

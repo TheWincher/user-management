@@ -15,6 +15,7 @@ application {
 kotlin {
     jvmToolchain(21)
 }
+
 dependencies {
     implementation(ktorLibs.server.config.yaml)
     implementation(ktorLibs.server.core)
@@ -39,6 +40,11 @@ dependencies {
 
     implementation("org.mindrot:jbcrypt:0.4")
 
-    testImplementation(kotlin("test"))
-    testImplementation(ktorLibs.server.testHost)
+    testImplementation(kotlin("test-junit5"))
+    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
+}
+
+tasks.test {
+  useJUnitPlatform()
 }

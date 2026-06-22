@@ -13,8 +13,8 @@ data class User private constructor(
     val createdAt: LocalDateTime
 ) {
     companion object {
-        fun create(email: Email, username: Username, hashedPassword: String): Result<User> {
-            return Result.success(User(UserId.generate(), email, username, hashedPassword, LocalDateTime.now()))
+        fun create(email: Email, username: Username, hashedPassword: String): User {
+            return User(UserId.generate(), email, username, hashedPassword, LocalDateTime.now())
         }
 
         fun reconstitute(
