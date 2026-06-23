@@ -43,8 +43,13 @@ dependencies {
     testImplementation(kotlin("test-junit5"))
     testImplementation("io.mockk:mockk:1.13.13")
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
+    testImplementation("com.h2database:h2:2.3.232")
+    testImplementation(ktorLibs.server.testHost)
 }
 
 tasks.test {
   useJUnitPlatform()
+  testLogging {
+        showStandardStreams = true
+    }
 }
