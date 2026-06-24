@@ -10,11 +10,11 @@ class UserQuery(private val getUserUseCase: GetUserUseCase, private val getCurre
     fun me(dfe: DataFetchingEnvironment): UserResponse {
         val authContext = dfe.graphQlContext.get<AuthContext>(AuthContext::class)
         return getCurrentUserUseCase.execute(authContext.accessToken)
-            .getOrElse { throw it }
+            .getOrElse { throw AppException(it) }
             .toResponse()
     }
 
     fun user(id: String): UserResponse {
-        return getUserUseCase.execute(id).getOrElse { throw it }.toResponse()
+        return getUserUseCase.execute(id).getOrElse { throw AppException(it) }.toResponse()
     }
 }

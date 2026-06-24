@@ -3,8 +3,11 @@ package louchez.emmanuel.application.usecase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import louchez.emmanuel.application.usecase.user.GetCurrentUserError
 import louchez.emmanuel.application.usecase.user.GetCurrentUserUseCase
 import louchez.emmanuel.application.usecase.user.GetUserUseCase
+import louchez.emmanuel.assertFailure
+import louchez.emmanuel.assertSuccess
 import louchez.emmanuel.domain.error.AuthError
 import louchez.emmanuel.domain.model.User
 import louchez.emmanuel.domain.model.UserId
@@ -39,11 +42,11 @@ class GetCurrentUserUseCaseTest {
         val result = useCase.execute("access_token")
 
         assertTrue(result.isSuccess)
-        assertEquals(userId, result.getOrThrow().id)
-        assertEquals(createdAt, result.getOrThrow().createdAt)
-        assertEquals("john", result.getOrThrow().username.value)
-        assertEquals("test@example.com", result.getOrThrow().email.value)
-        assertEquals("hashed_value", result.getOrThrow().hashedPassword)
+        assertEquals(userId, result.assertSuccess().id)
+        assertEquals(createdAt, result.assertSuccess().createdAt)
+        assertEquals("john", result.assertSuccess().username.value)
+        assertEquals("test@example.com", result.assertSuccess().email.value)
+        assertEquals("hashed_value", result.assertSuccess().hashedPassword)
 
         verify { tokenService.verifyAccessToken(any()) }
         verify { userRepository.findById(any()) }
@@ -54,7 +57,7 @@ class GetCurrentUserUseCaseTest {
 
         val result = useCase.execute(null)
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is AuthError.Unauthorized)
+        assertTrue(result.assertFailure() is GetCurrentUserError.Unauthorized)
 
         verify(exactly = 0) { tokenService.verifyAccessToken(any()) }
         verify(exactly = 0) { userRepository.findById(any()) }
@@ -66,7 +69,7 @@ class GetCurrentUserUseCaseTest {
 
         val result = useCase.execute("bad_access_token")
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is AuthError.Unauthorized)
+        assertTrue(result.assertFailure() is GetCurrentUserError.Unauthorized)
 
         verify { tokenService.verifyAccessToken(any()) }
         verify(exactly = 0) { userRepository.findById(any()) }

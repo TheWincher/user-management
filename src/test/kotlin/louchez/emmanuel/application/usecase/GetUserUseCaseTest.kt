@@ -3,7 +3,10 @@ package louchez.emmanuel.application.usecase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import louchez.emmanuel.application.usecase.user.GetUserError
 import louchez.emmanuel.application.usecase.user.GetUserUseCase
+import louchez.emmanuel.assertFailure
+import louchez.emmanuel.assertSuccess
 import louchez.emmanuel.domain.error.UserError
 import louchez.emmanuel.domain.model.User
 import louchez.emmanuel.domain.model.UserId
@@ -32,11 +35,11 @@ class GetUserUseCaseTest {
         val result = useCase.execute(userId.value.toString())
 
         assertTrue(result.isSuccess)
-        assertEquals(userId, result.getOrThrow().id)
-        assertEquals(createdAt, result.getOrThrow().createdAt)
-        assertEquals("john", result.getOrThrow().username.value)
-        assertEquals("test@example.com", result.getOrThrow().email.value)
-        assertEquals("hashed_value", result.getOrThrow().hashedPassword)
+        assertEquals(userId, result.assertSuccess().id)
+        assertEquals(createdAt, result.assertSuccess().createdAt)
+        assertEquals("john", result.assertSuccess().username.value)
+        assertEquals("test@example.com", result.assertSuccess().email.value)
+        assertEquals("hashed_value", result.assertSuccess().hashedPassword)
 
         verify { userRepository.findById(any()) }
     }
@@ -46,7 +49,7 @@ class GetUserUseCaseTest {
         val result = useCase.execute("test")
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is UserError.InvalidUserId)
+        assertTrue(result.assertFailure() is GetUserError.InvalidUserId)
         verify(exactly = 0) { userRepository.findById(any()) }
     }
 
@@ -58,7 +61,7 @@ class GetUserUseCaseTest {
         val result = useCase.execute(userId.value.toString())
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is UserError.UserNotFound)
+        assertTrue(result.assertFailure() is GetUserError.UserNotFound)
         verify { userRepository.findById(any()) }
     }
 }

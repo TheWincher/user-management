@@ -6,6 +6,7 @@ import graphql.execution.DataFetcherExceptionHandler
 import graphql.execution.DataFetcherExceptionHandlerParameters
 import graphql.execution.DataFetcherExceptionHandlerResult
 import louchez.emmanuel.domain.error.AppError
+import louchez.emmanuel.domain.error.ErrorClassification
 import java.util.concurrent.CompletableFuture
 
 class AppGraphQLExceptionHandler : DataFetcherExceptionHandler {
@@ -14,12 +15,12 @@ class AppGraphQLExceptionHandler : DataFetcherExceptionHandler {
     ): CompletableFuture<DataFetcherExceptionHandlerResult> {
         val exception = handlerParameters.exception
         return when (exception) {
-            is AppError -> GraphqlErrorBuilder.newError()
+            is AppException -> GraphqlErrorBuilder.newError()
                 .message(exception.message)
                 .extensions(
                     mapOf(
-                        "code" to exception.code,
-                        "classification" to exception.classification.name
+                        "code" to exception.error.code,
+                        "classification" to exception.error.classification.name
                     )
                 )
                 .build()

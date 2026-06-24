@@ -1,5 +1,6 @@
 package louchez.emmanuel.domain.model
 
+import louchez.emmanuel.assertSuccess
 import louchez.emmanuel.domain.error.UserError
 import kotlin.test.*
 
@@ -7,8 +8,8 @@ class UserTest {
 
     @Test
     fun `should create user`() {
-        val email = Email.create("test@example.com").getOrThrow()
-        val username = Username.create("test").getOrThrow()
+        val email = Email.create("test@example.com").assertSuccess()
+        val username = Username.create("test").assertSuccess()
 
         val user = User.create(email, username, "hashedPassword")
 
@@ -19,8 +20,8 @@ class UserTest {
 
     @Test
     fun `should generate id and createdAt on creation`() {
-        val email = Email.create("test@example.com").getOrThrow()
-        val username = Username.create("test").getOrThrow()
+        val email = Email.create("test@example.com").assertSuccess()
+        val username = Username.create("test").assertSuccess()
 
         val user1 = User.create(email, username, "hash")
         val user2 = User.create(email, username, "hash")

@@ -3,7 +3,10 @@ package louchez.emmanuel.application.usecase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import louchez.emmanuel.application.usecase.user.RegisterUserError
 import louchez.emmanuel.application.usecase.user.RegisterUserUseCase
+import louchez.emmanuel.assertFailure
+import louchez.emmanuel.assertSuccess
 import louchez.emmanuel.domain.error.UserError
 import louchez.emmanuel.domain.port.PasswordHasher
 import louchez.emmanuel.domain.port.UserRepository
@@ -23,9 +26,9 @@ class RegisterUserUseCaseTest {
         val result = useCase.execute("test@example.com", "john", "Secure#123")
 
         assertTrue(result.isSuccess)
-        assertEquals("john", result.getOrThrow().username.value)
-        assertEquals("test@example.com", result.getOrThrow().email.value)
-        assertEquals("hashed_value", result.getOrThrow().hashedPassword)
+        assertEquals("john", result.assertSuccess().username.value)
+        assertEquals("test@example.com", result.assertSuccess().email.value)
+        assertEquals("hashed_value", result.assertSuccess().hashedPassword)
 
         verify { userRepository.save(any()) }
     }
@@ -37,7 +40,7 @@ class RegisterUserUseCaseTest {
         val result = useCase.execute("test@example.com", "john", "Secure#123")
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is UserError.EmailAlreadyUsed)
+        assertTrue(result.assertFailure() is RegisterUserError.EmailAlreadyUsed)
         verify(exactly = 0) { userRepository.save(any()) }
     }
 
@@ -48,7 +51,7 @@ class RegisterUserUseCaseTest {
         val result = useCase.execute("test@example.com", "john", "weak")
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is UserError.InvalidPassword)
+        assertTrue(result.assertFailure() is RegisterUserError.InvalidPassword)
         verify(exactly = 0) { userRepository.save(any()) }
     }
 
@@ -59,7 +62,7 @@ class RegisterUserUseCaseTest {
         val result = useCase.execute("test@example.com", "", "Secure#123")
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is UserError.InvalidUsername)
+        assertTrue(result.assertFailure() is RegisterUserError.InvalidUsername)
         verify(exactly = 0) { userRepository.save(any()) }
     }
 }

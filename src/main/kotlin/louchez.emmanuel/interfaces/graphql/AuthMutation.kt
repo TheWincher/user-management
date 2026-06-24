@@ -15,7 +15,7 @@ class AuthMutation(
 ) : Mutation {
     fun login(email: String, password: String, dfe: DataFetchingEnvironment): UserResponse {
         val authContext = dfe.graphQlContext.get<AuthContext>(AuthContext::class)
-        val loginResult = loginUseCase.execute(email, password).getOrElse { throw it }
+        val loginResult = loginUseCase.execute(email, password).getOrElse { throw AppException(it) }
 
         authContext.call.response.cookies.append(
             Cookie(

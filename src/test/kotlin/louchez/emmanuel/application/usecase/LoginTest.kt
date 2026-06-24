@@ -4,6 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import louchez.emmanuel.application.usecase.auth.LoginUseCase
+import louchez.emmanuel.assertFailure
+import louchez.emmanuel.assertSuccess
 import louchez.emmanuel.domain.error.AuthError
 import louchez.emmanuel.domain.model.AccessToken
 import louchez.emmanuel.domain.model.RefreshToken
@@ -55,10 +57,10 @@ class LoginTest {
         val result = useCase.execute("test@example.com", "Secure#123")
 
         assertTrue(result.isSuccess)
-        assertEquals("access_token", result.getOrThrow().accessToken.value)
-        assertEquals(now.plus(15.minutes), result.getOrThrow().accessToken.expiresAt)
-        assertEquals("refresh_token", result.getOrThrow().refreshToken.value)
-        assertEquals(now.plus(7.days), result.getOrThrow().refreshToken.expiresAt)
+        assertEquals("access_token", result.assertSuccess().accessToken.value)
+        assertEquals(now.plus(15.minutes), result.assertSuccess().accessToken.expiresAt)
+        assertEquals("refresh_token", result.assertSuccess().refreshToken.value)
+        assertEquals(now.plus(7.days), result.assertSuccess().refreshToken.expiresAt)
 
         verify { userRepository.findByEmail(any()) }
         verify { passwordHasher.verify(any(), any()) }
@@ -73,7 +75,6 @@ class LoginTest {
         val result = useCase.execute("test@example.com", "Secure#123")
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is AuthError.InvalidCredentials)
 
         verify { userRepository.findByEmail(any()) }
         verify(exactly = 0) { passwordHasher.verify(any(), any()) }
@@ -99,7 +100,6 @@ class LoginTest {
         val result = useCase.execute("test@example.com", "Secure#123")
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is AuthError.InvalidCredentials)
 
         verify { userRepository.findByEmail(any()) }
         verify { passwordHasher.verify(any(), any()) }

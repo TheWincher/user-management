@@ -2,8 +2,12 @@ package louchez.emmanuel.domain.error
 
 import java.util.UUID
 
-sealed class UserError(message: String, override val code: String, override val classification: ErrorClassification) :
-    Exception(message), AppError {
+sealed class UserError(
+    override val message: String,
+    override val code: String,
+    override val classification: ErrorClassification
+) :
+    AppError {
     data class UserNotFound(val id: UUID) :
         UserError("User $id Not Found", "USER_NOT_FOUND", ErrorClassification.NOT_FOUND)
 
